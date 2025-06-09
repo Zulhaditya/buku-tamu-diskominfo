@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Tabel Tamu (Guest)
+model Guest {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  instansi    String
+  email       String   @unique
+  noTelepon   String   @map("no_telepon")
+  tujuan      String   // Keperluan/tujuan bertemu
+  foto        String?  // Path/URL foto tamu (opsional)
+  waktuKedatangan DateTime @default(now()) @map("waktu_kedatangan")
+  waktuKepulangan DateTime? @map("waktu_kepulangan") // Diisi saat tamu selesai bertemu
+  status      String   @default("MENUNGGU") // MENUNGGU, DITERIMA, DITOLAK, SELESAI
+  pejabatId   Int
+  pejabat     Pejabat @relation(fields: [pejabatId], references: [id])
+  adminId     Int?
+  admin       Admin?  @relation(fields: [adminId], references: [id])
+  notifikasi Notifikasi[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("guests")
+}
+
+// Tabel Pejabat (Officer)
+model Pejabat {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  jabatan     String
+  email       String   @unique
+  noTelepon   String   @map("no_telepon")
+  guests      Guest[]
+  notifikasi  Notifikasi[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("pejabat")
+}
+
+// Tabel Admin
+model Admin {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  email       String   @unique
+  password    String   // Hash password
+  role        String   @default("ADMIN") // ADMIN, SUPER_ADMIN
+  guests      Guest[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+// Tabel Notifikasi untuk Pejabat
+model Notifikasi {
+  id          Int      @id @default(autoincrement())
+  pesan       String
+  isDibaca    Boolean  @default(false) @map("is_dibaca")
+  pejabatId   Int
+  pejabat     Pejabat  @relation(fields: [pejabatId], references: [id])
+  guestId     Int
+  guest       Guest    @relation(fields: [guestId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("notifikasi")
+}
