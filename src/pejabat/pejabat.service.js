@@ -1,26 +1,8 @@
 const {
-  findGuests,
-  findGuest,
-  insertGuest,
   findAllPejabat,
   findPejabat,
   insertPejabat,
-} = require("./guest.repository");
-
-const getAllGuests = async () => {
-  const guests = await findGuests();
-  return guests;
-};
-
-const getGuestById = async (id) => {
-  const guest = await findGuest(id);
-  return guest;
-};
-
-const addGuest = async (newGuest) => {
-  const guest = await insertGuest(newGuest);
-  return guest;
-};
+} = require("./pejabat.repository");
 
 const getAllPejabat = async () => {
   const pejabat = await findAllPejabat();
@@ -38,9 +20,6 @@ const addPejabat = async (newPejabat) => {
 };
 
 module.exports = {
-  getAllGuests,
-  getGuestById,
-  addGuest,
   getAllPejabat,
   getPejabatById,
   addPejabat,
