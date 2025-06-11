@@ -29,8 +29,40 @@ const insertPejabat = async (dataPejabat) => {
   return pejabat;
 };
 
+const editPejabat = async (id, dataPejabat) => {
+  const pejabat = await prisma.pejabat.update({
+    where: {
+      id: parseInt(id),
+    },
+    data: {
+      nama: dataPejabat.nama,
+      jabatan: dataPejabat.jabatan,
+      email: dataPejabat.email,
+      noTelepon: dataPejabat.noTelepon,
+    },
+  });
+
+  return pejabat;
+};
+
+const editPejabatPartial = async (id, dataPejabat) => {
+  const pejabat = await prisma.pejabat.update({
+    where: { id: parseInt(id) },
+    data: {
+      ...(dataPejabat.nama && { nama: dataPejabat.nama }),
+      ...(dataPejabat.jabatan && { jabatan: dataPejabat.jabatan }),
+      ...(dataPejabat.email && { email: dataPejabat.email }),
+      ...(dataPejabat.noTelepon && { noTelepon: dataPejabat.noTelepon }),
+    },
+  });
+
+  return pejabat;
+};
+
 module.exports = {
   findAllPejabat,
   findPejabat,
   insertPejabat,
+  editPejabat,
+  editPejabatPartial,
 };
