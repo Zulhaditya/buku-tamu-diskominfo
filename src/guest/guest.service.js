@@ -1,3 +1,4 @@
+const prisma = require("../db");
 const {
   findGuests,
   findGuest,
@@ -18,8 +19,33 @@ const getGuestById = async (id) => {
 };
 
 const addGuest = async (newGuest) => {
-  const guest = await insertGuest(newGuest);
-  return guest;
+  try {
+    const guest = await insertGuest(newGuest);
+
+    const pejabat = await prisma.pejabat.findUnique({
+      where: { id: guest.pejabatId },
+    });
+
+    if (!pejabat) {
+      throw new Error(`Pejabat dengan ID ${guest.pejabatId} tidak ditemukan`);
+    }
+
+    const notifikasi = await prisma.notifikasi.create({
+      data: {
+        pesan: `Tamu baru: ${guest.nama} (${guest.instansi}) - ${guest.tujuan}`,
+        pejabatId: guest.pejabatId,
+        guestId: guest.id,
+      },
+    });
+
+    return {
+      ...guest,
+      notifikasiId: notifikasi.id,
+    };
+  } catch (error) {
+    console.error("Error di addGuest:", error);
+    throw new Error(`Gagal menambahkan tamu: ${error.message}`);
+  }
 };
 
 const getAllPejabat = async () => {

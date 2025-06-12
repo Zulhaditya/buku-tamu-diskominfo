@@ -23,7 +23,7 @@ const addPejabat = async (newPejabat) => {
 
 const updatePejabatById = async (id, dataPejabat) => {
   if (!dataPejabat) {
-    throw new Error("Data pejabat tidak boleh kosong.");
+    alert("Data pejabat masih kosong");
   }
 
   if (
@@ -32,7 +32,7 @@ const updatePejabatById = async (id, dataPejabat) => {
     !dataPejabat.email ||
     !dataPejabat.noTelepon
   ) {
-    throw new Error("Beberapa data masih kosong");
+    alert("Beberapa data pejabat masih kosong");
   }
 
   const pejabat = await editPejabat(id, dataPejabat);
@@ -40,10 +40,6 @@ const updatePejabatById = async (id, dataPejabat) => {
 };
 
 const partialUpdatePejabatById = async (id, dataPejabat) => {
-  if (!dataPejabat || Object.keys(dataPejabat).length === 0) {
-    throw new Error("Tidak ada data yang dikirim untuk diupdate");
-  }
-
   const pejabat = await editPejabatPartial(id, dataPejabat);
   return pejabat;
 };

@@ -58,6 +58,8 @@ const insertPejabat = async (dataPejabat) => {
       noTelepon: dataPejabat.noTelepon,
     },
   });
+
+  return pejabat;
 };
 
 module.exports = {
