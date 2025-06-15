@@ -6,6 +6,7 @@ const {
   findAllPejabat,
   findPejabat,
   insertPejabat,
+  updateGuestStatus,
 } = require("./guest.repository");
 
 const getAllGuests = async () => {
@@ -63,6 +64,22 @@ const addPejabat = async (newPejabat) => {
   return pejabat;
 };
 
+const ALLOWED_STATUSES = ["MENUNGGU", "DITERIMA", "DITOLAK", "SELESAI"];
+
+const updateStatus = async (guestId, status, adminId) => {
+  if (!ALLOWED_STATUSES.includes(status)) {
+    throw new Error(
+      `Status tidak valid. Gunakan: ${ALLOWED_STATUSES.join(", ")}`
+    );
+  }
+
+  // cek apakah guest ada
+  const guest = await findGuest(guestId);
+  if (!guest) throw new Error("Tamu tidak ditemukan!");
+
+  return await updateGuestStatus(guestId, status, adminId);
+};
+
 module.exports = {
   getAllGuests,
   getGuestById,
@@ -70,4 +87,5 @@ module.exports = {
   getAllPejabat,
   getPejabatById,
   addPejabat,
+  updateStatus,
 };

@@ -62,6 +62,17 @@ const insertPejabat = async (dataPejabat) => {
   return pejabat;
 };
 
+const updateGuestStatus = async (id, status, adminId) => {
+  return await prisma.guest.update({
+    where: { id: parseInt(id) },
+    data: {
+      status,
+      adminId: adminId ? parseInt(adminId) : null, // Opsional
+    },
+    include: { pejabat: { select: { nama: true } } },
+  });
+};
+
 module.exports = {
   findGuests,
   findGuest,
@@ -69,4 +80,5 @@ module.exports = {
   findAllPejabat,
   findPejabat,
   insertPejabat,
+  updateGuestStatus,
 };
